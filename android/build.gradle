@@ -1,0 +1,9 @@
+// Root Gradle file.
+// Plugin versions are defined in settings.gradle (pluginManagement + plugins block).
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}

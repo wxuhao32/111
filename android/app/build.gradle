@@ -1,0 +1,41 @@
+plugins {
+    id "com.android.application"
+    id "org.jetbrains.kotlin.android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+android {
+    namespace "com.example.lime"
+
+    // Your local SDK has android-36 installed (from `flutter doctor -v`), so we compile/target 36.
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "com.example.lime"
+        minSdk 21
+        targetSdk 36
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    compileOptions {
+        // AGP 8+ requires JDK 17+; using Java 17 here works fine with JDK 21.
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    buildTypes {
+        release {
+            // For MVP: keep it simple. If you later want shrink/obfuscation, enable minify + proguard.
+            signingConfig signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source ".."
+}
