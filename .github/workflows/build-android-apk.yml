@@ -2,46 +2,46 @@ name: Build Android APK (Release)
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["main"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      # 1️⃣ 拉取代码
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Java (AGP 8+)
+      # 2️⃣ 设置 Java（Android 官方 & Flutter CI 标准）
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: "17"
+          distribution: 'temurin'
+          java-version: '17'
 
+      # 3️⃣ 设置 Flutter（稳定版）
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.38.5"
-          channel: stable
-          cache: true
+          channel: 'stable'
 
-      - name: Flutter pub get
-        run: flutter pub get
-
+      # 4️⃣ 设置官方 Gradle（⚠️关键：绕过 gradle-wrapper.jar 校验）
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: "8.7"
+          gradle-version: 8.7
 
-      # Use system Gradle to avoid relying on gradle-wrapper.jar (Windows/network issues)
-      - name: Build release APK
-        run: |
-          cd android
-          gradle :app:assembleRelease
+      # 5️⃣ 获取 Flutter 依赖
+      - name: Flutter pub get
+        run: flutter pub get
 
-      - name: Upload APK artifact
+      # 6️⃣ 构建 Release APK（真正编译）
+      - name: Build APK (Release)
+        run: flutter build apk --release
+
+      # 7️⃣ 上传 APK 为构建产物（Artifacts）
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
-          path: android/app/build/outputs/apk/release/*.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
